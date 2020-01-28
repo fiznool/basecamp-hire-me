@@ -22,6 +22,9 @@ export default class InterpreterController extends ((BaseController as unknown) 
 
   public processCommand(e: CustomEvent): void {
     const { command } = e.detail;
+
+    this.printCommand(command);
+
     switch (command) {
       case 'b':
       case 'begin':
@@ -34,9 +37,13 @@ export default class InterpreterController extends ((BaseController as unknown) 
         this.reload();
         break;
       default:
-        this.commandNotFound();
+        this.commandNotFound(command);
         break;
     }
+  }
+
+  private printCommand(command: string): void {
+    appendHtml(this.outputTarget, `<p class="input-prompt">${command}</p>`);
   }
 
   private nextReason(): void {
@@ -90,8 +97,11 @@ export default class InterpreterController extends ((BaseController as unknown) 
     window.location.reload();
   }
 
-  private commandNotFound() {
-    // TODO show the user
+  private commandNotFound(command: string): void {
+    appendHtml(
+      this.outputTarget,
+      `<p class="tight-top">Command not found: ${command}</p>`
+    );
   }
 
   private get promptController(): PromptController {

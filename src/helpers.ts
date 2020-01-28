@@ -13,6 +13,6 @@ export function reasonContent(
     .trim()
     .replace('<h2>', `<h2>${reasonNumber}. `);
 
-  // Return the content preceded by a horizontal rule
-  return `<hr>${reasonContent}`;
+  // Return the content succeeded by a horizontal rule
+  return `${reasonContent}<hr>`;
 }
