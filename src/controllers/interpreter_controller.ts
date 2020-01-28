@@ -72,6 +72,7 @@ export default class InterpreterController extends ((BaseController as unknown) 
         const promptHelpHtml = promptHelp(hasRemainingReasons);
         this.promptHelp = promptHelpHtml;
       })
+      .catch(e => this.fragmentFetchError(e))
       .finally(() => {
         // Always enable the prompt after the request is done.
         this.promptEnabled = true;
@@ -88,13 +89,21 @@ export default class InterpreterController extends ((BaseController as unknown) 
     finished = true;
 
     // Fetch the 'finish' fragment and render it out.
-    fetchFragment('finish').then(fragment =>
-      appendHtml(this.outputTarget, fragment)
-    );
+    fetchFragment('finish')
+      .then(fragment => appendHtml(this.outputTarget, fragment))
+      .catch(e => this.fragmentFetchError(e));
   }
 
   private reload(): void {
     window.location.reload();
+  }
+
+  private fragmentFetchError(e: Error): void {
+    console.warn(e);
+    appendHtml(
+      this.outputTarget,
+      '<p>Sorry, there was a problem, please try again later.</p>'
+    );
   }
 
   private commandNotFound(command: string): void {

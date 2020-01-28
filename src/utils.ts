@@ -14,7 +14,14 @@ export function createReasonIdCache(total: number): string[] {
 
 export function fetchFragment(route: string): Promise<string> {
   const fragmentPath = `fragments/${route}.html`;
-  return fetch(fragmentPath).then(res => res.text());
+  return fetch(fragmentPath)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Could not fetch ${fragmentPath}: ${res.statusText}`);
+      }
+      return res;
+    })
+    .then(res => res.text());
 }
 
 export function htmlToNode(html: string): Node {
