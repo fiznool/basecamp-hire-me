@@ -24,6 +24,7 @@
 }
 
 .container {
+  padding-top: calc(var(--global-space) * 2);
   padding-bottom: calc(var(--global-space) * 2);
 }
 

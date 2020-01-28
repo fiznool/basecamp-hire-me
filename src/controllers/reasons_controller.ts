@@ -2,23 +2,28 @@ import { Controller } from 'stimulus';
 import debounce from 'lodash/debounce';
 import shuffle from 'lodash/shuffle';
 
-const TOTAL_REASONS = 5;
+const TOTAL_REASONS = 10;
 
-const reasonIdsOrdered = Array(TOTAL_REASONS)
-  .fill(null)
-  .map((_, idx) => {
-    const id = `${idx + 1}`;
-    return id.padStart(2, '0');
-  });
-
-const reasonIdCache = shuffle(reasonIdsOrdered);
+const reasonIdCache = createReasonIdCache(TOTAL_REASONS);
 
 let finished = false;
+
+function createReasonIdCache(total: number): string[] {
+  const cache = Array(total)
+    .fill(null)
+    .map((_, i) => {
+      const id = `${i + 1}`;
+      const idPadded = id.padStart(2, '0');
+      return idPadded;
+    });
+
+  return shuffle(cache);
+}
 
 abstract class BaseController extends Controller {
   public readonly listTarget!: HTMLDivElement;
   public readonly ctaTarget!: HTMLButtonElement;
-  public observer: MutationObserver;
+  public observer?: MutationObserver;
 }
 
 export default class extends ((Controller as unknown) as typeof BaseController) {
@@ -67,10 +72,13 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
     if (finished) {
       return;
     }
-
     finished = true;
+
     this.removeButton();
-    this.fetchFragment('finish').then(fragment => this.appendContent(fragment));
+    this.fetchFragment('finish').then(fragment => {
+      const node = this.htmlToNode(fragment);
+      this.element.appendChild(node);
+    });
   }
 
   private fetchFragment(route: string): Promise<string> {
@@ -84,14 +92,14 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
       .trim()
       .replace('<h2>', `<h2>${reasonNumber}. `);
 
-    this.appendContent(reasonContent);
+    const node = this.htmlToNode(reasonContent);
+    this.listTarget.appendChild(node);
   }
 
-  private appendContent(html: string): void {
+  private htmlToNode(html: string): Node {
     const template = document.createElement('template');
     template.innerHTML = html;
-
-    this.listTarget.appendChild(template.content);
+    return template.content;
   }
 
   private enableButton(remainingReasons: boolean): void {
