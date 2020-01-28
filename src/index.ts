@@ -1,3 +1,4 @@
+import 'normalize.css';
 import 'terminal.css';
 
 import { Application } from 'stimulus';
