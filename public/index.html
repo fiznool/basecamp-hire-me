@@ -6,17 +6,14 @@
   <script src="bundle.js" async></script>
 </head>
 <body class="terminal">
-  <div class="container" data-controller="reasons">
-    <div data-target="reasons.content">
-      <h1>10 reasons why you should hire me</h1>
-      <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
-      <p></p>
-      <div data-target="reasons.list"></div>
-      <hr>
-    </div>
-    <p data-target="reasons.promptHelp">Type <kbd>begin</kbd> or <kbd>b</kbd> in the prompt to start.</p>
+  <div class="container" data-controller="interpreter scroll-on-output" data-action="prompt:command->interpreter#processCommand">
+    <h1>10 reasons why you should hire me</h1>
+    <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
+    <div data-target="interpreter.output"></div>
+    <hr>
+    <p data-target="interpreter.promptHelp">Type <kbd>begin</kbd> or <kbd>b</kbd> in the prompt to start.</p>
     <div class="input-prompt">
-      <input id="prompt" name="prompt" type="text" autofocus data-target="reasons.prompt" data-action="blur->reasons#focusPrompt keypress->reasons#handlePromptKeypress">
+      <input id="prompt" name="prompt" type="text" autofocus data-target="interpreter.prompt" data-controller="prompt" data-action="blur->prompt#handleBlur keydown->prompt#handleKeydown">
     </div>
   </div>
 </body>
