@@ -1,0 +1,14 @@
+{
+  // Use the workspace bundled version of TS.
+  "typescript.tsdk": "./node_modules/typescript/lib",
+
+  // Disable autosaving as it prevents ESLint autofix from working.
+  "files.autoSave": "off",
+
+  // Use ESLint to validate both JS and TS files,
+  // making sure we 'autofix' them on save.
+  // This will also format the files with prettier.
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+}

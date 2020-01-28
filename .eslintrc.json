@@ -1,0 +1,36 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2017": true
+  },
+  "plugins": ["prettier"],
+  "extends": [
+    "eslint:recommended", // Enable core recommended ESLint rules
+    "plugin:prettier/recommended" // Enable core recommended prettier rules
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2019
+  },
+  "overrides": [
+    // TypeScript config.
+    {
+      "files": ["**/*.ts"],
+      "env": {
+        "browser": true,
+        "es2020": true
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "extends": [
+        "eslint:recommended", // Enable core recommended ESLint rules
+        "plugin:@typescript-eslint/eslint-recommended", // Disables rules from eslint:recommended which are already handled by core TypeScript.
+        "plugin:@typescript-eslint/recommended", // Enable core recommended TypeScript rules
+        "plugin:prettier/recommended", // Enable core recommended prettier rules
+        "prettier/@typescript-eslint" // Disable typescript-eslint rules that conflict with prettier
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    }
+  ]
+}
