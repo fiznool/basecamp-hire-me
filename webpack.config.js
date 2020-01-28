@@ -14,6 +14,7 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './public',
+    watchContentBase: true,
   },
 
   resolve: {
