@@ -1,9 +1,10 @@
-import { Controller } from 'stimulus';
 import debounce from 'lodash/debounce';
+
+import BaseController from '../base_controller';
 
 const DEBOUNCE_THRESHOLD = 50;
 
-export default class extends Controller {
+export default class extends BaseController {
   public observer?: MutationObserver;
 
   public connect(): void {
@@ -17,7 +18,7 @@ export default class extends Controller {
       DEBOUNCE_THRESHOLD
     );
     const observer = new MutationObserver(debouncedScrollIntoView);
-    observer.observe(this.element, config);
+    observer.observe(this.el, config);
 
     this.observer = observer;
   }
@@ -30,7 +31,7 @@ export default class extends Controller {
   }
 
   private scrollIntoView(): void {
-    this.element.scrollIntoView({
+    this.el.scrollIntoView({
       behavior: 'smooth',
       block: 'end',
       inline: 'nearest',

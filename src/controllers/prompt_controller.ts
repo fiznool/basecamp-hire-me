@@ -1,14 +1,9 @@
-import { Controller } from 'stimulus';
+import BaseController from '../base_controller';
 
-export default class extends Controller {
-  private get promptElement(): HTMLInputElement {
-    // Cast the root element as an input, so TypeScript can help us with autocomplete.
-    return this.element as HTMLInputElement;
-  }
-
+export default class PromptController extends BaseController<HTMLInputElement> {
   public handleBlur(): void {
     // Make sure the prompt is always focussed.
-    setTimeout(() => this.promptElement.focus(), 50);
+    setTimeout(() => this.el.focus(), 50);
   }
 
   public handleKeydown(e: KeyboardEvent): void {
@@ -18,21 +13,21 @@ export default class extends Controller {
     }
   }
 
+  public set enabled(enabled: boolean) {
+    this.el.disabled = !enabled;
+  }
+
   private readPrompt(): string {
     // Read the value, normalising it by lowercasing and removing whitespace
-    const command = this.promptElement.value.trim().toLowerCase();
+    const command = this.el.value.trim().toLowerCase();
 
     // Clear the prompt ready for the next command
-    this.promptElement.value = '';
+    this.el.value = '';
 
     return command;
   }
 
   private dispatchCommand(command: string): void {
-    const evt = new CustomEvent('prompt:command', {
-      bubbles: true,
-      detail: { command },
-    });
-    this.element.dispatchEvent(evt);
+    this.emit('prompt:command', { command });
   }
 }

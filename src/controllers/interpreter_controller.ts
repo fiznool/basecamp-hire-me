@@ -1,8 +1,9 @@
-import { Controller } from 'stimulus';
-
+import BaseController from '../base_controller';
 import { promptHelp, reasonContent } from '../helpers';
 import { createReasonIdCache } from '../reasons';
 import { fetchFragment, appendHtml } from '../utils';
+
+import PromptController from './prompt_controller';
 
 const TOTAL_REASONS = 10;
 
@@ -10,13 +11,13 @@ const reasonIdCache = createReasonIdCache(TOTAL_REASONS);
 
 let finished = false;
 
-abstract class BaseController extends Controller {
+abstract class BaseInterpreterController extends BaseController {
   public readonly outputTarget!: HTMLDivElement;
   public readonly promptTarget!: HTMLInputElement;
   public readonly promptHelpTarget!: HTMLInputElement;
 }
 
-export default class extends ((Controller as unknown) as typeof BaseController) {
+export default class InterpreterController extends ((BaseController as unknown) as typeof BaseInterpreterController) {
   public static targets = ['output', 'prompt', 'promptHelp'];
 
   public processCommand(e: CustomEvent): void {
@@ -93,8 +94,15 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
     // TODO show the user
   }
 
+  private get promptController(): PromptController {
+    // Instead of directly manipulating the promptTarget, since it has an associated controller, proxy calls to it.
+    // This allows the prompt controller to encapsulate the functionality and expose a simple API for modifications.
+    return this.findController<PromptController>(this.promptTarget, 'prompt');
+  }
+
   private set promptEnabled(enabled: boolean) {
-    this.promptTarget.disabled = !enabled;
+    // Use the prompt controller instead of manipulating the target directly.
+    this.promptController.enabled = enabled;
   }
 
   private set promptHelp(content: string) {
