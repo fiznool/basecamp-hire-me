@@ -2,11 +2,16 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <title>Basecamp, Hire Me!</title>
   <script src="bundle.js" async></script>
 </head>
 <body class="terminal">
-  <div class="container">
-    <h1 data-controller="example"></h1>
+  <div class="container" data-controller="reasons">
+    <h1>10 reasons why you should hire me</h1>
+    <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
+    <p>Click Start to begin!</p>
+    <div class="reasons-list" data-target="reasons.list"></div>
+    <button class="btn btn-default btn-cta" data-action="reasons#next" data-target="reasons.cta">Start</button>
   </div>
 </body>
 </html>

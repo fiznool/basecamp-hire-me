@@ -22,3 +22,12 @@
   --input-style: solid;
   --display-h1-decoration: none;
 }
+
+.container {
+  padding-bottom: calc(var(--global-space) * 2);
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
