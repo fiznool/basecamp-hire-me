@@ -21,13 +21,15 @@ function createReasonIdCache(total: number): string[] {
 }
 
 abstract class BaseController extends Controller {
+  public readonly contentTarget!: HTMLDivElement;
   public readonly listTarget!: HTMLDivElement;
-  public readonly ctaTarget!: HTMLButtonElement;
+  public readonly promptTarget!: HTMLInputElement;
+  public readonly promptHelpTarget!: HTMLInputElement;
   public observer?: MutationObserver;
 }
 
 export default class extends ((Controller as unknown) as typeof BaseController) {
-  public static targets = ['list', 'cta'];
+  public static targets = ['content', 'list', 'prompt', 'promptHelp'];
 
   public connect(): void {
     const config = {
@@ -37,7 +39,7 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
 
     const debouncedOnMutation = debounce(this.onMutation.bind(this), 50);
     const observer = new MutationObserver(debouncedOnMutation);
-    observer.observe(this.element, config);
+    observer.observe(this.contentTarget, config);
 
     this.observer = observer;
   }
@@ -49,23 +51,29 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
     }
   }
 
-  public next(): void {
-    // Fetch a random fragment.
-    const nextFragmentId = reasonIdCache.pop();
-    if (typeof nextFragmentId === 'undefined') {
-      this.finish();
-      return;
+  public focusPrompt(): void {
+    setTimeout(() => this.promptTarget.focus(), 50);
+  }
+
+  public handlePromptKeypress(e: MouseEvent): void {
+    if (e.which === 13) {
+      const command = this.readPrompt();
+      switch (command) {
+        case 'b':
+        case 'begin':
+        case 'm':
+        case 'more':
+          this.nextReason();
+          break;
+        case 'r':
+        case 'restart':
+          this.reload();
+          break;
+        default:
+          this.commandNotFound();
+          break;
+      }
     }
-
-    this.disableButton();
-
-    const remainingReasons = reasonIdCache.length;
-    const thisReasonNumber = remainingReasons + 1;
-
-    this.fetchFragment(`reasons/${nextFragmentId}`).then(fragment => {
-      this.appendReasonContent(thisReasonNumber, fragment);
-      this.enableButton(remainingReasons > 0);
-    });
   }
 
   private finish(): void {
@@ -74,11 +82,42 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
     }
     finished = true;
 
-    this.removeButton();
     this.fetchFragment('finish').then(fragment => {
       const node = this.htmlToNode(fragment);
-      this.element.appendChild(node);
+      this.contentTarget.appendChild(node);
     });
+  }
+
+  private nextReason(): void {
+    // Fetch a random fragment.
+    const nextFragmentId = reasonIdCache.pop();
+    if (typeof nextFragmentId === 'undefined') {
+      this.finish();
+      return;
+    }
+
+    this.disablePrompt();
+
+    const remainingReasons = reasonIdCache.length;
+    const thisReasonNumber = remainingReasons + 1;
+
+    this.fetchFragment(`reasons/${nextFragmentId}`).then(fragment => {
+      this.appendReasonContent(thisReasonNumber, fragment);
+      this.enablePrompt();
+
+      const promptHelp = remainingReasons
+        ? `Type <kbd>more</kbd> (<kbd>m</kbd>) for another reason, or <kbd>restart</kbd> (<kbd>r</kbd>) to start again`
+        : `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again`;
+      this.setPromptHelp(promptHelp);
+    });
+  }
+
+  private reload(): void {
+    window.location.reload();
+  }
+
+  private commandNotFound() {
+    // TODO show the user
   }
 
   private fetchFragment(route: string): Promise<string> {
@@ -92,7 +131,7 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
       .trim()
       .replace('<h2>', `<h2>${reasonNumber}. `);
 
-    const node = this.htmlToNode(reasonContent);
+    const node = this.htmlToNode(`<hr>${reasonContent}`);
     this.listTarget.appendChild(node);
   }
 
@@ -102,22 +141,33 @@ export default class extends ((Controller as unknown) as typeof BaseController) 
     return template.content;
   }
 
-  private enableButton(remainingReasons: boolean): void {
-    this.ctaTarget.innerText = remainingReasons ? 'Next' : 'Finish';
-    this.ctaTarget.disabled = false;
+  private readPrompt(): string {
+    const command = this.promptTarget.value.trim().toLowerCase();
+    this.clearPrompt();
+    return command;
   }
 
-  private disableButton(): void {
-    this.ctaTarget.disabled = true;
-    this.ctaTarget.innerText = 'Loading...';
+  private clearPrompt(): void {
+    this.promptTarget.value = '';
   }
 
-  private removeButton(): void {
-    this.ctaTarget.remove();
+  private enablePrompt(): void {
+    this.promptTarget.disabled = false;
+  }
+
+  private disablePrompt(): void {
+    this.promptTarget.disabled = true;
+  }
+
+  private setPromptHelp(content: string): void {
+    this.promptHelpTarget.innerHTML = content;
+  }
+
+  private clearPromptHelp(): void {
+    this.promptHelpTarget.innerHTML = '';
   }
 
   private onMutation(): void {
-    console.log('onMutation');
     this.element.scrollIntoView({
       behavior: 'smooth',
       block: 'end',

@@ -7,11 +7,17 @@
 </head>
 <body class="terminal">
   <div class="container" data-controller="reasons">
-    <h1>10 reasons why you should hire me</h1>
-    <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
-    <p>Click Start to begin!</p>
-    <div data-target="reasons.list"></div>
-    <button class="btn btn-default btn-cta" data-action="reasons#next" data-target="reasons.cta">Start</button>
+    <div data-target="reasons.content">
+      <h1>10 reasons why you should hire me</h1>
+      <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
+      <p></p>
+      <div data-target="reasons.list"></div>
+      <hr>
+    </div>
+    <p data-target="reasons.promptHelp">Type <kbd>begin</kbd> or <kbd>b</kbd> in the prompt to start.</p>
+    <div class="input-prompt">
+      <input id="prompt" name="prompt" type="text" autofocus data-target="reasons.prompt" data-action="blur->reasons#focusPrompt keypress->reasons#handlePromptKeypress">
+    </div>
   </div>
 </body>
 </html>
