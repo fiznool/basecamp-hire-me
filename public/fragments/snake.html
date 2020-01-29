@@ -1,0 +1,13 @@
+<div class="snake-container" data-controller="snake" data-action="keydown@document->snake#handleKeydown">
+  <h2 class="text-center">Snake</h2>
+  <div class="snake-canvas-container">
+    <canvas class="snake-canvas" data-target="snake.canvas"></canvas>
+    <div class="snake-canvas-message-container"><span class="background" data-target="snake.canvasMessage">Game Over</span></div>
+  </div>
+  <p class="text-center"><strong class="color-primary">Score: <span data-target="snake.score">0</span></strong></p>
+  <ul>
+    <li data-target="snake.instructions">Press Spacebar to begin</li>
+    <li>Use arrow keys to navigate</li>
+    <li>Press Escape to quit</li>
+  </ul>
+</div>

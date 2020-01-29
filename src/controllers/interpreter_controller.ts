@@ -1,9 +1,10 @@
 import BaseController from '../base_controller';
 import { promptHelp, reasonContent } from '../helpers';
-import { createReasonIdCache } from '../reasons';
+import { createReasonIdCache } from '../factories/reasons';
 import { fetchFragment, appendHtml } from '../utils';
 
 import PromptController from './prompt_controller';
+import ModalController from './modal_controller';
 
 const TOTAL_REASONS = 10;
 
@@ -15,10 +16,11 @@ abstract class BaseInterpreterController extends BaseController {
   public readonly outputTarget!: HTMLDivElement;
   public readonly promptTarget!: HTMLInputElement;
   public readonly promptHelpTarget!: HTMLInputElement;
+  public readonly modalTarget!: HTMLDivElement;
 }
 
 export default class InterpreterController extends ((BaseController as unknown) as typeof BaseInterpreterController) {
-  public static targets = ['output', 'prompt', 'promptHelp'];
+  public static targets = ['output', 'prompt', 'promptHelp', 'modal'];
 
   public processCommand(e: CustomEvent): void {
     const { command } = e.detail;
@@ -36,10 +38,19 @@ export default class InterpreterController extends ((BaseController as unknown) 
       case 'restart':
         this.reload();
         break;
+      case 's':
+      case 'snake':
+        this.launchSnake();
+        break;
       default:
         this.commandNotFound(command);
         break;
     }
+  }
+
+  public modalVisibilityToggled(e: CustomEvent): void {
+    const { visible } = e.detail;
+    this.promptController.enabled = !visible;
   }
 
   private printCommand(command: string): void {
@@ -94,6 +105,18 @@ export default class InterpreterController extends ((BaseController as unknown) 
       .catch(e => this.fragmentFetchError(e));
   }
 
+  private launchSnake(): void {
+    fetchFragment('snake')
+      .then(fragment => this.attachSnake(fragment))
+      .catch(e => this.fragmentFetchError(e));
+  }
+
+  private attachSnake(html: string): void {
+    const mc = this.modalController;
+    mc.content = html;
+    mc.visible = true;
+  }
+
   private reload(): void {
     window.location.reload();
   }
@@ -117,6 +140,10 @@ export default class InterpreterController extends ((BaseController as unknown) 
     // Instead of directly manipulating the promptTarget, since it has an associated controller, proxy calls to it.
     // This allows the prompt controller to encapsulate the functionality and expose a simple API for modifications.
     return this.findController<PromptController>(this.promptTarget, 'prompt');
+  }
+
+  private get modalController(): ModalController {
+    return this.findController<ModalController>(this.modalTarget, 'modal');
   }
 
   private set promptEnabled(enabled: boolean) {

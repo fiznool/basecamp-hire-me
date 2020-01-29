@@ -50,3 +50,55 @@ input[name="prompt"]:focus {
 .input-prompt:before {
   content: "> ";
 }
+
+.text-center {
+  text-align: center;
+}
+
+.color-primary {
+  color: var(--primary-color);
+}
+
+.background {
+  background-color: var(--background-color);
+}
+
+.modal-outlet {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  z-index: 2;
+  background-color: var(--background-color);
+}
+
+.modal-outlet--visible {
+  display: flex;
+  justify-content: center;
+}
+
+.snake-container {
+  margin-top: 60px;
+}
+
+.snake-canvas-container {
+  position: relative;
+}
+
+.snake-canvas {
+  border: 4px solid var(--code-bg-color);
+  margin-bottom: calc(var(--global-space) * 2);
+}
+
+.snake-canvas-message-container {
+  position: absolute;
+  top: 50%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin-top: -1.5em;
+  font-size: 1.5em;
+}

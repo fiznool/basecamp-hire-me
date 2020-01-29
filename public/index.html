@@ -6,15 +6,18 @@
   <script src="bundle.js" async></script>
 </head>
 <body class="terminal">
-  <div class="container" data-controller="interpreter scroll-on-output" data-action="prompt:command->interpreter#processCommand">
-    <h1>10 reasons why you should hire me</h1>
-    <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
-    <hr>
-    <div data-target="interpreter.output"></div>
-    <p data-target="interpreter.promptHelp">Type <kbd>begin</kbd> or <kbd>b</kbd> in the prompt to start.</p>
-    <div class="input-prompt">
-      <input id="prompt" name="prompt" type="text" autofocus data-target="interpreter.prompt" data-controller="prompt" data-action="blur->prompt#handleBlur keydown->prompt#handleKeydown">
+  <div data-controller="interpreter" data-action="modal:visibilityToggle->interpreter#modalVisibilityToggled">
+    <div class="container" data-controller="scroll-on-output" data-action="prompt:command->interpreter#processCommand">
+      <h1>10 reasons why you should hire me</h1>
+      <p>Exercitation est aute tempor minim ut cillum consequat dolore laboris ut labore veniam nostrud.</p>
+      <hr>
+      <div data-target="interpreter.output"></div>
+      <p data-target="interpreter.promptHelp">Type <kbd>begin</kbd> or <kbd>b</kbd> in the prompt to start.</p>
+      <div class="input-prompt">
+        <input id="prompt" name="prompt" type="text" autofocus data-target="interpreter.prompt" data-controller="prompt" data-action="blur->prompt#handleBlur keydown->prompt#handleKeydown">
+      </div>
     </div>
+    <div class="modal-outlet" data-controller="modal" data-target="interpreter.modal" data-action="keydown@document->modal#handleKeydown"></div>
   </div>
 </body>
 </html>

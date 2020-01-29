@@ -2,8 +2,12 @@ import BaseController from '../base_controller';
 
 export default class PromptController extends BaseController<HTMLInputElement> {
   public handleBlur(): void {
-    // Make sure the prompt is always focussed.
-    setTimeout(() => this.el.focus(), 50);
+    // Make sure an active prompt is always focussed.
+    setTimeout(() => {
+      if (!this.el.disabled) {
+        this.el.focus();
+      }
+    }, 50);
   }
 
   public handleKeydown(e: KeyboardEvent): void {
@@ -15,6 +19,11 @@ export default class PromptController extends BaseController<HTMLInputElement> {
 
   public set enabled(enabled: boolean) {
     this.el.disabled = !enabled;
+    if (enabled) {
+      this.el.focus();
+    } else {
+      this.el.blur();
+    }
   }
 
   private readPrompt(): string {

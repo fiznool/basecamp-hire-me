@@ -1,7 +1,7 @@
 export function promptHelp(hasRemainingReasons: boolean): string {
   return hasRemainingReasons
     ? `Type <kbd>more</kbd> (<kbd>m</kbd>) for another reason, or <kbd>restart</kbd> (<kbd>r</kbd>) to start again`
-    : `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again`;
+    : `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again, or <kbd>s</kbd> for a sssurprise`;
 }
 
 export function reasonContent(
