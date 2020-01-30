@@ -3,6 +3,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -58,6 +59,7 @@ const development = {
 const production = {
   output: {
     filename: '[name].[chunkhash:7].js',
+    path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'source-map',
   optimization: {
@@ -67,9 +69,8 @@ const production = {
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   plugins: [
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!fragments*/**'],
-    }),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin([{ from: 'public' }]),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash:7].css',
     }),
