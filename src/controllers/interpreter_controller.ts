@@ -1,5 +1,10 @@
 import BaseController from '../base_controller';
-import { promptHelp, reasonContent } from '../helpers';
+import {
+  promptHelp,
+  reasonContent,
+  PromptHelpType,
+  sectionContent,
+} from '../helpers';
 import { createReasonIdCache } from '../factories/reasons';
 import { fetchFragment, appendHtml } from '../utils';
 
@@ -30,8 +35,7 @@ export default class InterpreterController extends ((BaseController as unknown) 
     switch (command) {
       case 'b':
       case 'begin':
-      case 'm':
-      case 'more':
+      case '':
         this.nextReason();
         break;
       case 'r':
@@ -71,7 +75,7 @@ export default class InterpreterController extends ((BaseController as unknown) 
 
     const remainingReasons = reasonIdCache.remaining();
     const reasonNumber = remainingReasons + 1;
-    const hasRemainingReasons = !reasonIdCache.isEmpty();
+    const hasRemainingReasons = remainingReasons > 0;
 
     fetchFragment(`reasons/${nextFragmentId}`)
       .then(fragment => {
@@ -80,8 +84,9 @@ export default class InterpreterController extends ((BaseController as unknown) 
         appendHtml(this.outputTarget, reasonContentHtml);
 
         // Render the prompt help.
-        const promptHelpHtml = promptHelp(hasRemainingReasons);
-        this.promptHelp = promptHelpHtml;
+        this.promptHelp = hasRemainingReasons
+          ? PromptHelpType.ANOTHER_REASON
+          : PromptHelpType.FINISH;
       })
       .catch(e => this.fragmentFetchError(e))
       .finally(() => {
@@ -101,7 +106,11 @@ export default class InterpreterController extends ((BaseController as unknown) 
 
     // Fetch the 'finish' fragment and render it out.
     fetchFragment('finish')
-      .then(fragment => appendHtml(this.outputTarget, fragment))
+      .then(fragment => {
+        const finishContentHtml = sectionContent(fragment);
+        appendHtml(this.outputTarget, finishContentHtml);
+        this.promptHelp = PromptHelpType.RESTART;
+      })
       .catch(e => this.fragmentFetchError(e));
   }
 
@@ -151,7 +160,8 @@ export default class InterpreterController extends ((BaseController as unknown) 
     this.promptController.enabled = enabled;
   }
 
-  private set promptHelp(content: string) {
+  private set promptHelp(type: PromptHelpType) {
+    const content = promptHelp(type);
     this.promptHelpTarget.innerHTML = content;
   }
 }

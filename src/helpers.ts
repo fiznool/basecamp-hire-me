@@ -1,7 +1,18 @@
-export function promptHelp(hasRemainingReasons: boolean): string {
-  return hasRemainingReasons
-    ? `Type <kbd>more</kbd> (<kbd>m</kbd>) for another reason, or <kbd>restart</kbd> (<kbd>r</kbd>) to start again`
-    : `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again, or <kbd>s</kbd> for a sssurprise`;
+export enum PromptHelpType {
+  ANOTHER_REASON,
+  FINISH,
+  RESTART,
+}
+
+export function promptHelp(type: PromptHelpType): string {
+  switch (type) {
+    case PromptHelpType.ANOTHER_REASON:
+      return `Hit <kbd>Enter</kbd> for another reason`;
+    case PromptHelpType.FINISH:
+      return `Hit <kbd>Enter</kbd> to finish`;
+    case PromptHelpType.RESTART:
+      return `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again, or <kbd>s</kbd> for a sssurprise`;
+  }
 }
 
 export function reasonContent(
@@ -9,10 +20,13 @@ export function reasonContent(
   fragmentHtml: string
 ): string {
   // Inject the reason number into the returned HTML
-  const reasonContent = fragmentHtml
+  const reasonHtml = fragmentHtml
     .trim()
     .replace('<h2>', `<h2>${reasonNumber}. `);
 
-  // Return the content succeeded by a horizontal rule
-  return `${reasonContent}<hr>`;
+  return sectionContent(reasonHtml);
+}
+
+export function sectionContent(html: string): string {
+  return `<section>${html}<hr></section>`;
 }

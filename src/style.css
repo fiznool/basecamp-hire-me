@@ -43,6 +43,10 @@ input[name="prompt"]:focus {
   border: 0;
 }
 
+.terminal h1, .terminal h2 {
+  color: var(--primary-color);
+}
+
 .input-prompt {
   white-space: nowrap;
 }

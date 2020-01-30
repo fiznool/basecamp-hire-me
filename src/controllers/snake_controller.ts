@@ -71,6 +71,10 @@ export default class SnakeController extends ((BaseController as unknown) as typ
   }
 
   public handleKeydown(e: KeyboardEvent): void {
+    // Don't bubble the event up
+    e.preventDefault();
+    e.stopPropagation();
+
     switch (e.key) {
       case 'ArrowUp':
         this.snakeGame.changeDirection(SnakeDirection.UP);
