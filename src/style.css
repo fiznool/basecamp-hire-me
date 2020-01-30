@@ -47,6 +47,32 @@ input[name="prompt"]:focus {
   color: var(--primary-color);
 }
 
+.site-header {
+  display: flex;
+}
+
+.site-header h1 {
+  flex: 1 1 auto;
+}
+
+.site-header .github-link {
+  margin: calc(var(--global-space) * 1.5) 0 calc(var(--global-space) * 1.5) var(--global-space);
+  width: calc(var(--global-space) * 3);
+  height: calc(var(--global-space) * 3);
+  transition: transform 0.1s;
+}
+
+.site-header .github-link svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--font-color);
+}
+
+.site-header .github-link:hover {
+  background-color: transparent;
+  transform: scale(1.1);
+}
+
 .input-prompt {
   white-space: nowrap;
 }

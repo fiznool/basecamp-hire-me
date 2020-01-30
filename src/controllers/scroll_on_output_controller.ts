@@ -32,7 +32,7 @@ export default class extends BaseController {
 
   private scrollIntoView(): void {
     this.el.scrollIntoView({
-      behavior: 'smooth',
+      behavior: 'auto',
       block: 'end',
       inline: 'nearest',
     });
