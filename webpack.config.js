@@ -1,6 +1,8 @@
+// Huge thanks to https://survivejs.com/webpack/
 const path = require('path');
 const merge = require('webpack-merge');
 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -55,16 +57,21 @@ const development = {
 
 const production = {
   output: {
-    filename: '[name].[contenthash].js',
+    filename: '[name].[chunkhash:7].js',
   },
   devtool: 'source-map',
   optimization: {
+    splitChunks: {
+      chunks: 'initial',
+    },
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   plugins: [
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['**/*', '!fragments*/**'],
+    }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-      chunkFilename: '[id].[contenthash].css',
+      filename: '[name].[contenthash:7].css',
     }),
   ],
   module: {
