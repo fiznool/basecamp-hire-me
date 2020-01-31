@@ -1,17 +1,3 @@
-import shuffle from 'lodash/shuffle';
-
-export function createReasonIdCache(total: number): string[] {
-  const cache = Array(total)
-    .fill(null)
-    .map((_, i) => {
-      const id = `${i + 1}`;
-      const idPadded = id.padStart(2, '0');
-      return idPadded;
-    });
-
-  return shuffle(cache);
-}
-
 export function fetchFragment(route: string): Promise<string> {
   const fragmentPath = `fragments/${route}.html`;
   return fetch(fragmentPath)

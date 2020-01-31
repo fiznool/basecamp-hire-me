@@ -64,6 +64,8 @@ export default function snakeFactory({
   cells,
   onFrame = noop,
 }: SnakeFactoryOptions): SnakeGame {
+  // The snakeGameFactory uses the 'revealing module' pattern to keep implementation details private,
+  // exposing only the API that is needed by the renderer.
   const canvasSize = snakeSize * cells;
 
   let state = generateGameState();
@@ -125,7 +127,7 @@ export default function snakeFactory({
     state.direction = direction;
   }
 
-  // Modifications to the UI will only happen in a gameLoop.
+  // The status of the game is updated on every call to gameLoop.
   function gameLoop(): void {
     if (isStarted()) {
       // Calculate the next position of the snake
@@ -135,15 +137,17 @@ export default function snakeFactory({
       eatFoodIfNeeded();
     }
 
-    // Emit the state of the game
+    // The factory is only concerned with business logic. Rendering happens by notifying the calling code, which should be the rendering layer.
     onFrame(state);
 
     if (isGameOver()) {
       stop(SnakeGameStatus.DIED);
     }
 
-    // Check again, because if game is over, status will have been changed
+    // Check if started again, because if game is over, status will have been changed
     if (isStarted()) {
+      // The game runs at 10fps.
+      // We use setTimeout for the gameLoop instead of any rendering-specific APIs (e.g. raf).
       setTimeout(gameLoop, 100);
     }
   }

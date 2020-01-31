@@ -5,8 +5,8 @@
   <title>Basecamp, Hire Me!</title>
 </head>
 <body class="terminal">
-  <div data-controller="interpreter" data-action="modal:visibilityToggle->interpreter#modalVisibilityToggled">
-    <div class="container" data-controller="scroll-on-output" data-action="prompt:command->interpreter#processCommand">
+  <div data-controller="root" data-action="interpreter:command->root#processInterpreterCommand modal:visibilityToggle->root#modalVisibilityToggled">
+    <div class="container" data-controller="interpreter scroll-on-output" data-target="root.interpreter" data-action="prompt:command->interpreter#processCommand">
       <header class="site-header">
         <h1>10 reasons why you should hire me</h1>
         <!-- GitHub logo -->
@@ -20,7 +20,7 @@
         <input id="prompt" name="prompt" type="text" autofocus data-target="interpreter.prompt" data-controller="prompt" data-action="blur->prompt#handleBlur keydown->prompt#handleKeydown">
       </div>
     </div>
-    <div class="modal-outlet" data-controller="modal" data-target="interpreter.modal" data-action="keydown@document->modal#handleKeydown"></div>
+    <div class="modal-outlet" data-controller="modal" data-target="root.modal" data-action="keydown@document->modal#handleKeydown"></div>
   </div>
 </body>
 </html>

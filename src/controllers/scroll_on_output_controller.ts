@@ -8,16 +8,17 @@ export default class extends BaseController {
   public observer?: MutationObserver;
 
   public connect(): void {
+    // Use a MutationObserver to always scroll the element to the bottom when anything changes inside it.
     const config = {
       childList: true,
       subtree: true,
     };
 
-    const debouncedScrollIntoView = debounce(
-      this.scrollIntoView.bind(this),
+    const debouncedScrollToBottom = debounce(
+      this.scrollToBottom.bind(this),
       DEBOUNCE_THRESHOLD
     );
-    const observer = new MutationObserver(debouncedScrollIntoView);
+    const observer = new MutationObserver(debouncedScrollToBottom);
     observer.observe(this.el, config);
 
     this.observer = observer;
@@ -30,7 +31,7 @@ export default class extends BaseController {
     }
   }
 
-  private scrollIntoView(): void {
+  private scrollToBottom(): void {
     this.el.scrollIntoView({
       behavior: 'auto',
       block: 'end',

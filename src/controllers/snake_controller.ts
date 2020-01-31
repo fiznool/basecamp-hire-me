@@ -8,6 +8,7 @@ import { SnakeGame, SnakeGameState } from '../factories/snake';
 const SNAKE_PART_SIZE = 10;
 const SNAKE_CELLS = 30;
 
+// Build the snake colours from the CSS properties.
 const documentStyle = getComputedStyle(document.documentElement);
 
 const BACKGROUND_COLOR = documentStyle.getPropertyValue('--background-color');
@@ -49,6 +50,7 @@ export default class SnakeController extends ((BaseController as unknown) as typ
     this.canvasTarget.width = CANVAS_SIZE;
     this.canvasTarget.height = CANVAS_SIZE;
 
+    // The snake game is drawn onto the canvas element.
     const ctx = this.canvasTarget.getContext('2d');
     if (ctx === null) {
       throw new Error('Could not get canvas rendering context');
@@ -75,6 +77,7 @@ export default class SnakeController extends ((BaseController as unknown) as typ
     e.preventDefault();
     e.stopPropagation();
 
+    // Handle the key that is pressed. If it's a valid key, carry out the associated action in the game.
     switch (e.key) {
       case 'ArrowUp':
         this.snakeGame.changeDirection(SnakeDirection.UP);
@@ -102,6 +105,7 @@ export default class SnakeController extends ((BaseController as unknown) as typ
   }
 
   private draw(state: SnakeGameState): void {
+    // The game is redrawn on every frame using raf.
     requestAnimationFrame(() => {
       this.drawBackground(state);
       this.drawSnake(state);
