@@ -1,3 +1,5 @@
+import { template } from 'lodash';
+
 export enum PromptHelpType {
   ANOTHER_REASON,
   FINISH,
@@ -9,29 +11,30 @@ export const promptHelp = {
   RESTART: `Type <kbd>restart</kbd> (<kbd>r</kbd>) to start again, or <kbd>s</kbd> for a sssurprise`,
 };
 
-export function reasonContent(
-  reasonNumber: number,
-  fragmentHtml: string
-): string {
+export const sectionContent = template('<section><%= html %><hr></section>');
+
+export const inputPrompt = template(
+  '<p class="input-prompt"><%- command %></p>'
+);
+
+export const fragmentError =
+  '<p>Sorry, there was a problem, please try again later.</p>';
+
+export const commandNotFound = template(
+  '<p class="tight-top">Command not found: <%- command %></p>'
+);
+
+export function reasonContent({
+  reasonNumber,
+  fragmentHtml,
+}: {
+  reasonNumber: number;
+  fragmentHtml: string;
+}): string {
   // Inject the reason number into the returned HTML
   const reasonHtml = fragmentHtml
     .trim()
     .replace('<h2>', `<h2>${reasonNumber}. `);
 
-  return sectionContent(reasonHtml);
-}
-
-export function sectionContent(html: string): string {
-  return `<section>${html}<hr></section>`;
-}
-
-export function inputPrompt(command: string): string {
-  return `<p class="input-prompt">${command}</p>`;
-}
-
-export const fragmentError =
-  '<p>Sorry, there was a problem, please try again later.</p>';
-
-export function commandNotFound(command: string): string {
-  return `<p class="tight-top">Command not found: ${command}</p>`;
+  return sectionContent({ html: reasonHtml });
 }

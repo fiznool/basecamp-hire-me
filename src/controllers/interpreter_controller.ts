@@ -48,12 +48,12 @@ export default class InterpreterController extends ((BaseController as unknown) 
   }
 
   private printCommand(command: string): void {
-    const html = templates.inputPrompt(command);
+    const html = templates.inputPrompt({ command });
     appendHtml(this.outputTarget, html);
   }
 
   private commandNotFound(command: string): void {
-    appendHtml(this.outputTarget, templates.commandNotFound(command));
+    appendHtml(this.outputTarget, templates.commandNotFound({ command }));
   }
 
   private get promptController(): PromptController {

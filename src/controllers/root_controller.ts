@@ -58,12 +58,12 @@ export default class RootController extends ((BaseController as unknown) as type
     const hasRemainingReasons = remainingReasons > 0;
 
     fetchFragment(`reasons/${nextFragmentId}`)
-      .then(fragment => {
+      .then(fragmentHtml => {
         // Format and render the returned fragment.
-        const reasonContentHtml = templates.reasonContent(
+        const reasonContentHtml = templates.reasonContent({
           reasonNumber,
-          fragment
-        );
+          fragmentHtml,
+        });
         this.interpreterController.renderOutput(reasonContentHtml);
 
         // Render the correct prompt help.
@@ -103,7 +103,7 @@ export default class RootController extends ((BaseController as unknown) as type
         const ic = this.interpreterController;
 
         // Render the finish fragment and associated prompt help.
-        const finishContentHtml = templates.sectionContent(fragment);
+        const finishContentHtml = templates.sectionContent({ html: fragment });
         ic.renderOutput(finishContentHtml);
         ic.promptHelp = templates.promptHelp.RESTART;
       })
